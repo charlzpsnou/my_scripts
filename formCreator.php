@@ -9,58 +9,48 @@ require_once("model.php");
 
 Class formCreator{
     static protected $_form_creator=0;
-//    private $selected_year="2000";
-//    private $selected_month="01";
-//    private $selected_day="01";
+    public $selected_year="";
+    public $selected_month="";
+    public $selected_day="";
+    public $itenerary_type="";
 
     private function __construct(){
+        $this->selected_year=date('Y');
+        $this->selected_month=date('m');
+        $this->selected_day=date('d');
     }
 
-    public function create_itenerary_type_options(){
-            $enter_db = model::getDatabaseInstance();
-            $itenerary_types = $enter_db->getAllIteneraryType();
-            foreach ($itenerary_types as $value) {
-                echo "<option> ".$value."</option>";
-            }
+    public function getIteneraryTypes(){
+        $enter_db = model::getDatabaseInstance();
+        $itenerary_types = $enter_db->getAllIteneraryType();
+        return $itenerary_types;
     }
-    public function create_years_options(){
-        for($year=2000;$year<=2100; $year++){
-            if($year==$_REQUEST['year']){
-                echo '<option selected> '.$year."</option>"; }
-            else {
-                echo '<option > '.$year."</option>"; }
+    public function getDateOptions(){
+        $year=date('Y');
+        settype($year, 'integer');
+        for($i=1900; $i<=$year; $i++){
+            $date_options['years'][$i]="$i";
         }
-    }
-
-    public function create_months_options(){
-        for($month=1;$month<=12; $month++){
-            if($month<10){ $monthe="0".$month;}
-            else {$monthe=$month;}
-            if($monthe==($_REQUEST['month'])){
-                echo "<option selected>".$monthe."</option>";
+        for($i=1; $i<=12; $i++){
+            if($i<10){
+                $date_options['months'][$i]="0".$i;
             }
             else {
-                echo "<option >".$monthe."</option>";
+                $date_options['months'][$i]="$i";
+            }
+
+        }
+        for($i=1; $i<=31; $i++){
+            if($i<10){
+                $date_options['days'][$i]="0".$i;
+            }
+            else {
+                $date_options['days'][$i] = "$i";
             }
         }
+        return $date_options;
     }
 
-    public function create_days_options(){
-        for($day=1;$day<=31; $day++){
-            if($day<10){ $days="0".$day;}
-                else { $days=$day;}
-            if($days==($_REQUEST['day'])){
-                echo '<option selected> '.$days."</option>";
-            }
-            else { echo '<option> '.$days."</option>"; }
-        }
-    }
-
-//    public function save_choise($selected_year, $selected_month, $selected_day){
-//        $this->selected_year=$selected_year;
-//        $this->selected_monthe=$selected_month;
-//        $this->selected_day=$selected_day;
-//    }
 
     static public function getFormCreator(){
         if(static::$_form_creator===0){
@@ -68,4 +58,6 @@ Class formCreator{
         }
         return static::$_form_creator;
     }
+
+
 }

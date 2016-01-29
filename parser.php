@@ -28,6 +28,25 @@ Class parser{
         return $itinerary_array;
     }
 
+//    public function parseColumn($itenerary_array, $column_number){
+//        foreach($itenerary_array as $row){
+//            $column[]=$row[$column_number];
+//        }
+//        return $column;
+//    }
+//    public function getDistances($itenerary_array, $column_number){
+//        foreach($itenerary_array as $index=>$row){
+//            if($index===0){
+//                continue;
+//            }
+//                $column[]=trim($row[$column_number]);
+//        }
+//        foreach($column as $key=>$value){
+//            settype($column[$key], 'integer');
+//        }
+//        return $column;
+//    }
+
     private function _saveIteneraryListToDB($itinerary_array){
         $i_date=$this->getDateFromIteneraryList($itinerary_array);
         $json_i_list=json_encode($itinerary_array);
@@ -40,6 +59,9 @@ Class parser{
         //Берем дату из первой колонки второй строки и далее преобразуем ее в формат для Базы Данных
         $date=$itinerary_array[1][0];
         $date=trim($date);
+        if($date==""){
+            throw new Exception("В маршрутном листе не введена дата, проверьте правильность написания даты (вторая строка, первая колонка)");
+        }
         $stamparray=preg_split("/[[:punct:][:space:]]/",$date);
 //    var_dump($stamparray);
         foreach($stamparray as $value){
