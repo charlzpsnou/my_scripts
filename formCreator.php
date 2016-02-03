@@ -20,6 +20,13 @@ Class formCreator{
         $this->selected_day=date('d');
     }
 
+    static public function getFormCreator(){
+        if(static::$_form_creator===0){
+            static::$_form_creator=new self;
+        }
+        return static::$_form_creator;
+    }
+
     public function getIteneraryTypes(){
         $enter_db = model::getDatabaseInstance();
         $itenerary_types = $enter_db->getAllIteneraryType();
@@ -51,13 +58,6 @@ Class formCreator{
         return $date_options;
     }
 
-
-    static public function getFormCreator(){
-        if(static::$_form_creator===0){
-            static::$_form_creator=new formCreator();
-        }
-        return static::$_form_creator;
-    }
 
 
 }

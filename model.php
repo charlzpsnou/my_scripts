@@ -23,8 +23,16 @@ CLASS model{
         if ($this->mysqli->connect_errno){throw new Exception("Не удалось подключиться к базе данных '{$this->mysqli->connect_error}'");}
 //            if($this->mysqli->connect_errno){echo "Something wrong:".$this->mysqli->connect_error."<br>"; }
 //            else {echo "Connection to DATABASE was succesfull <br>";}
-
     }
+
+    static public function getDatabaseInstance(){
+        if(self::$_instance===0){
+
+            self::$_instance=new self;
+        }
+        return self::$_instance;
+    }
+
     public function getRowsFromTable($table){
         $query="SELECT * FROM $table";
         $this->mysqli->real_query($query);
@@ -61,7 +69,25 @@ CLASS model{
             $notification[][]=$this->notification="К сожалению, по заданным параметрам не нашлось совпадений в базе данных";
             return $notification;
         }
+    }
 
+    public function getPatternsByType($itenerary_type){
+        $table=$this->mainTable;
+
+        $query="SELECT i_list FROM $table WHERE i_type=?";
+
+        $stmt=$this->mysqli->stmt_init();
+        $stmt->prepare($query);
+        $stmt->bind_param('s', $itenerary_type);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($json_i_list);
+        $list_of_iteneraries=array();
+        while($stmt->fetch()){
+            $list_of_iteneraries[]=json_decode($json_i_list);
+        }
+        $stmt->close();
+        return $list_of_iteneraries;
     }
 
     public function setRowToTable($i_list, $date, $i_type, $table){
@@ -104,11 +130,4 @@ CLASS model{
         return $i_types;
     }
 
-     static public function getDatabaseInstance(){
-         if(static::$_instance===0){
-
-             static::$_instance=new model();
-         }
-         return static::$_instance;
-    }
 }

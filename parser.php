@@ -11,6 +11,8 @@ Class parser{
     private $file_source;
     private $itenerary_type;
 
+//    static public $data_container=array();
+
     public function __construct($f, $itenerary_type){
         $this->file_source=$f;
         $this->itenerary_type=$itenerary_type;
@@ -27,6 +29,19 @@ Class parser{
         $this->_saveIteneraryListToDB($itinerary_array);
         return $itinerary_array;
     }
+
+//    static public function saveDataToObject($data_container){
+//        self::$data_container=$data_container;
+//    }
+//
+//    static public function getDataFromObject(){
+//        if(!empty(self::$data_container)){
+//            return self::$data_container;
+//        }
+//        else{
+//            return false;
+//        }
+//    }
 
 //    public function parseColumn($itenerary_array, $column_number){
 //        foreach($itenerary_array as $row){
@@ -52,7 +67,7 @@ Class parser{
         $json_i_list=json_encode($itinerary_array);
         $i_type=$this->itenerary_type;
         $enter_db=model::getDatabaseInstance();
-        $if_save=$enter_db->setRowToTable($json_i_list, $i_date, $i_type,"itenerary");
+//        $if_save=$enter_db->setRowToTable($json_i_list, $i_date, $i_type,"itenerary");
     }
 
     private function getDateFromIteneraryList($itinerary_array){
