@@ -11,19 +11,25 @@ class StopTimeGenerator {
 //    public $stop_time_array=array();
 //    public $stop_distance_array=array();
 
-    public $highway_velocity=150;
-    public $town_velocity=80;
+    public $highway_velocity=0;
+    public $town_velocity=0;
     public $start_time="";
 
     public $array_size=39;
 
-    public function __construct($data_container){
+    public function __construct($data_container, $user_date, $highway_velocity=150, $town_velocity=80){
         $this->array_size=count($data_container);
-        $this->start_date=date("d.m.Y");
-        $this->start_time=date("H:i:s d.m.Y");
+        if (is_string($user_date)){
+            $this->start_time=$this->getUserDate($user_date);
+        }
+        else {
+            $this->start_time=$user_date;
+        }
+        $this->highway_velocity=$highway_velocity;
+        $this->town_velocity=$town_velocity;
     }
 
-    public function getColumn($data_container, $column_position=6){
+    private function getColumn($data_container, $column_position=6){
         $number_of_rows=count($data_container);
         for($i=0; $i<$number_of_rows; $i++){
             $row=$data_container[$i];
@@ -33,7 +39,7 @@ class StopTimeGenerator {
         return $column;
     }
 
-    public function getDistances($summary_distances_column){
+    private function getDistances($summary_distances_column){
         $number_of_rows=count($summary_distances_column);
         $summary_distances_array=$summary_distances_column;
         for($i=1; $i<$number_of_rows; $i++) {
@@ -54,7 +60,7 @@ class StopTimeGenerator {
      *  Данная функция возвращает массив расстояний до следующей остановки
      *  Используется, как внутренняя функция для рассчета скорости
      * */
-    public function getRelativeDistances($summary_distances_array){
+    private function getRelativeDistances($summary_distances_array){
         // Для избежания ненужных ошибок создаем массив, с таким же количеством индексов
         $number_of_rows=count($summary_distances_array);
         $relative_distances_array=range(0, $number_of_rows-1);
@@ -67,7 +73,7 @@ class StopTimeGenerator {
         return $relative_distances_array;
     }
 
-    public function getIntervals($intervals_column){
+    private function getIntervals($intervals_column){
         $number_of_rows=count($intervals_column);
         for($i=1; $i<$number_of_rows; $i++){
             $intervals_column[$i]=trim($intervals_column[$i]);
@@ -83,7 +89,7 @@ class StopTimeGenerator {
         return $intervals_array;
     }
 
-    public function getVelocity($relative_distances_array){
+    private function getVelocity($relative_distances_array){
         $number_of_rows=count($relative_distances_array);
         $velocity_array=range(0, $number_of_rows-1 );
 
@@ -114,7 +120,8 @@ class StopTimeGenerator {
 
         $begin_time_array=range(0, $this->array_size-1);
         $end_time_array=range(0, $this->array_size-1);
-        $begin_time_array[1]=strtotime($this->start_time);
+//        $begin_time_array[1]=strtotime($this->start_time);
+        $begin_time_array[1]=$this->start_time;
 
         if(count($intervals_array)!==count($velocity_array)){
             echo "array counts don't matches!";
@@ -141,16 +148,32 @@ class StopTimeGenerator {
         return $converted_date_array;
     }
 
-    public function insertColumnToArray($data_container=array(), $column=array(), $column_position=2){
-        $generated_data_array=$data_container;
-        if(count($data_container)!==$this->array_size){
-            echo "You insert an array with wrong size, please check!";
+//    public function insertColumnToArray($data_container=array(), $column=array(), $column_position=2){
+//        $generated_data_array=$data_container;
+//        if(count($data_container)!==$this->array_size){
+//            echo "You insert an array with wrong size, please check!";
+//        }
+//        for($i=0; $i<$this->array_size; $i++){
+//            $generated_data_array[$i][$column_position]=$column[$i];
+//        }
+//        return $generated_data_array;
+//    }
+
+    private function getUserDate($date){
+        $date=trim($date);
+        if($date==""){
+            throw new Exception("В маршрутном листе не введена дата, проверьте правильность написания даты (вторая строка, первая колонка)");
         }
-        for($i=0; $i<$this->array_size; $i++){
-            $generated_data_array[$i][$column_position]=$column[$i];
+        $stamparray=preg_split("/[[:punct:][:space:]]/",$date);
+        foreach($stamparray as $value){
+            settype($value, 'integer');
         }
-        return $generated_data_array;
+        $user_timestamp=mktime($stamparray[0], $stamparray[1],$stamparray[2],$stamparray[4],$stamparray[3],$stamparray[5]);
+//        $realdata=date("Y-m-d",$stamp);
+//        $this->start_time=$user_timestamp;
+        return $user_timestamp;
     }
+
 }
 
 

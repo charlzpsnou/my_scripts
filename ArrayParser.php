@@ -6,27 +6,11 @@
  * Time: 10:34
  */
 
-class DateGenerator {
+class ArrayParser {
     static protected $date_generator=0;
-//    private $current_year="";
-//    private $current_month="";
-//    private $current_day="";
     private $user_date="";
 
     private function __construct(){
-        $this->current_year=date('Y');
-        $this->current_month=date('m');
-        $this->current_day=date('d');
-    }
-
-    public function generateStartDateColumn($user_date=array()){
-        if(empty($user_date)){
-            $this->user_date=date("H:i:s d.m.Y");
-        }
-        else{
-            $this->user_date=date("H:i:s d.m.Y", mktime($user_date['H'], $user_date['i'], $user_date['s'], $user_date['m'], $user_date['d'], $user_date['Y']));
-        }
-        return $this->user_date;
     }
 
     public function parseColumn($itenerary_array=array(), $column_position=2){
@@ -75,24 +59,10 @@ class DateGenerator {
         return $new_data_array;
     }
 
-//    private function random($number){
-//        $max_rand=$number/2;
-//        $rand_number=$number+rand(1, $max_rand);
-//        if($rand_number>=59){
-//            $number-=rand(1, $max_rand);
-//        }
-//        else{
-//            $number+=rand(1, $max_rand);
-//        }
-//        return $number;
-//    }
 
-
-
-
-    static public function createDateGenerator(){
+    static public function createArrayParser(){
         if (static::$date_generator===0){
-            static::$date_generator = new DateGenerator();
+            static::$date_generator = new self;
         }
         return static::$date_generator;
     }

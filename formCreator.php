@@ -27,11 +27,12 @@ Class formCreator{
         return static::$_form_creator;
     }
 
-    public function getIteneraryTypes(){
-        $enter_db = model::getDatabaseInstance();
-        $itenerary_types = $enter_db->getAllIteneraryType();
-        return $itenerary_types;
-    }
+//    public function getIteneraryTypes(){
+//        $enter_db = model::getDatabaseInstance();
+//        $itenerary_types = $enter_db->getAllIteneraryType();
+//        return $itenerary_types;
+//    }
+
     public function getDateOptions(){
         $year=date('Y');
         settype($year, 'integer');
