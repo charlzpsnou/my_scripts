@@ -14,6 +14,8 @@ class StopTimeGenerator {
     public $highway_velocity=0;
     public $town_velocity=0;
     public $start_time="";
+    public $begin_date="";
+    public $end_date="";
 
     public $array_size=39;
 
@@ -53,6 +55,11 @@ class StopTimeGenerator {
                 $summary_distances_array[$i]=round( ($summary_distances_column[$i]/1000), 1);
             }
         }
+//        for($i=1; $i<$number_of_rows-1; $i++){
+//            if($summary_distances_array[$i]<$summary_distances_array[$i-1]){
+//                $summary_distances_array[$i]=($summary_distances_array[$i-1]+$summary_distances_array[$i+1])/2;
+//            }
+//        }
         return $summary_distances_array;
     }
 
@@ -144,6 +151,8 @@ class StopTimeGenerator {
                 $converted_date_array['begin'][$i]=date("H:i:s d.m.Y", $begin_time_array[$i]);
                 $converted_date_array['end'][$i]=date("H:i:s d.m.Y", $end_time_array[$i]);
             }
+            $this->begin_date=date("d.m.Y", $begin_time_array[1]);
+            $this->end_date=date("d.m.Y", $end_time_array["$this->array_size"]);
         }
         return $converted_date_array;
     }

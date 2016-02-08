@@ -5,7 +5,7 @@
  * Date: 22.01.16
  * Time: 12:10
  */
-require_once("model.php");
+//require_once("model.php");
 
 Class formCreator{
     static protected $_form_creator=0;
@@ -58,7 +58,4 @@ Class formCreator{
         }
         return $date_options;
     }
-
-
-
 }
